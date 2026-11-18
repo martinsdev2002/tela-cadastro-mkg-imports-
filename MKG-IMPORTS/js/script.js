@@ -10,6 +10,14 @@ const detalhesSucesso = document.getElementById("success-details");
 
 let temporizadorSucesso;
 
+function normalizarNome(nome) {
+    return nome.trim().replace(/\s+/g, " ");
+}
+
+function nomeCompletoValido(nome) {
+    return normalizarNome(nome).split(" ").filter(Boolean).length >= 2;
+}
+
 function mostrarErro(campo, idErro, mensagem) {
     const elementoErro = document.getElementById(idErro);
 
@@ -42,11 +50,11 @@ function validarFormulario() {
     limparErrosFormulario();
 
     let formularioValido = true;
-    const nome = campoNome.value.trim();
+    const nome = normalizarNome(campoNome.value);
     const email = campoEmail.value.trim();
 
-    if (nome === "") {
-        mostrarErro(campoNome, "nome-error", "Informe seu nome completo.");
+    if (!nomeCompletoValido(nome)) {
+        mostrarErro(campoNome, "nome-error", "Informe seu nome e sobrenome.");
         formularioValido = false;
     }
 
@@ -107,7 +115,7 @@ formulario.addEventListener("submit", function (evento) {
     }
 
     const cadastro = {
-        nome: campoNome.value.trim(),
+        nome: normalizarNome(campoNome.value),
         email: campoEmail.value.trim(),
         senha: campoSenha.value,
         categoria: campoCategoria.value,
@@ -146,7 +154,7 @@ const nomesErros = {
         }
 
         const campoEstaValido =
-            (campo === campoNome && campo.value.trim() !== "") ||
+            (campo === campoNome && nomeCompletoValido(campo.value)) ||
             (campo === campoEmail && campo.value.trim() !== "" && campo.checkValidity()) ||
             (campo === campoSenha && campo.value.length >= 8) ||
             (campo === campoCategoria && campo.value !== "");
